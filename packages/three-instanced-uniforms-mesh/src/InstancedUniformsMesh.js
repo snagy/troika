@@ -5,6 +5,7 @@ import { createInstancedUniformsDerivedMaterial } from './InstancedUniformsDeriv
 export class InstancedUniformsMesh extends InstancedMesh {
   constructor (geometry, material, count) {
     super(geometry, material, count)
+    this.maxCount = count;
     this._instancedUniformNames = [] //treated as immutable
   }
 
@@ -84,10 +85,10 @@ export class InstancedUniformsMesh extends InstancedMesh {
     if (!attr) {
       const defaultValue = getDefaultUniformValue(this._baseMaterial, name)
       const itemSize = getItemSizeForValue(defaultValue)
-      attr = attrs[attrName] = new InstancedBufferAttribute(new Float32Array(itemSize * this.count), itemSize)
+      attr = attrs[attrName] = new InstancedBufferAttribute(new Float32Array(itemSize * this.maxCount), itemSize)
       // Fill with default value:
       if (defaultValue !== null) {
-        for (let i = 0; i < this.count; i++) {
+        for (let i = 0; i < this.maxCount; i++) {
           setAttributeValue(attr, i, defaultValue)
         }
       }
@@ -152,4 +153,3 @@ function getItemSizeForValue (value) {
     : Array.isArray(value) ? value.length
     : 0
 }
-
